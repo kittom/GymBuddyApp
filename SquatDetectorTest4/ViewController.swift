@@ -8,28 +8,30 @@
 import UIKit
 import AVFoundation
 import Vision
+import CoreML
+
+typealias SquatClassifier = SquatClassifierTest1_1
 
 // MARK: - ViewController
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     // Camera preview view which shows the live feed from the device's camera
+
+    
     private let cameraPreview: UIView = {
-        let view = UIView() // Uses the default UIView pre made by Xcode
-        view.translatesAutoresizingMaskIntoConstraints = false // Stops constraints being automatically made
-        return view
-    }()
+            let view = UIView() // Uses the default UIView pre made by Xcode
+            view.translatesAutoresizingMaskIntoConstraints = false // Stops constraints being automatically made
+            return view
+        }()
+
+    
+    
     
     private var detectionOverlay: CALayer! // Layer for showing detected recognized points
     private var rootLayer: CALayer! // Bottom layer for the cameraPreview view
     
     // Properties of the dot showng recognised points
-    private let recognisedDot: CALayer = {
-        let dot = CALayer()
-        dot.bounds = CGRect(x: 0, y: 0, width: 12, height: 12)
-        dot.cornerRadius = 6
-        dot.backgroundColor = UIColor.green.cgColor
-        return dot
-    }()
+    
     
     private let captureSession = AVCaptureSession() // Capture session for video input and output
     private var videoDataOutput = AVCaptureVideoDataOutput() // Video data output for capturing video frames
@@ -37,25 +39,76 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     private var requests = [VNRequest]() // Array of vision requests
     
+    private var didPrintSizeAndResolution = false
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if !didPrintSizeAndResolution {
+            let width = cameraPreview.frame.size.width
+            let height = cameraPreview.frame.size.height
+            print("CameraPreview Width: \(width), Height: \(height)")
+
+            let screenScale = UIScreen.main.scale
+            let resolutionWidth = width * screenScale
+            let resolutionHeight = height * screenScale
+            print("CameraPreview Resolution: \(resolutionWidth) x \(resolutionHeight)")
+
+            didPrintSizeAndResolution = true
+        }
+    }
+    
+    
     // Called when the view controller is loaded
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCamera() // Set up camera
         setupVision() // Set up Vision framework
         setupUI() // Set up UI
+        
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    lazy var squatClassifier: SquatClassifier = {
+        do {
+            let model = try SquatClassifierTest1_1(configuration: MLModelConfiguration())
+            return model
+        } catch {
+            fatalError("Error initializing SquatClassifier: \(error)")
+        }
+    }()
+
+
+    
+
+
+    
+
+    
+    
+    
+    
     
     // MARK: - UI Setup
     private func setupUI() {
         view.addSubview(cameraPreview) // Add camera preview view to the view controller's view
+        cameraPreview.translatesAutoresizingMaskIntoConstraints = false
         // Add constraints for the camera preview view to match the view controller's view bounds
         // Without the constraints you get white borders like an older iPhone
         NSLayoutConstraint.activate([
-            cameraPreview.topAnchor.constraint(equalTo: view.topAnchor),
-            cameraPreview.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            cameraPreview.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            cameraPreview.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            cameraPreview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cameraPreview.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            cameraPreview.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1),
+            cameraPreview.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.9)
         ])
+        //print("the views resolution\(cameraPreview.frame.size.height) x \(cameraPreview.frame.size.width)")
     }
     
     // MARK: - Camera Setup
@@ -64,7 +117,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         // Get the back camera of the device
         // This can be changed to default camera however this can cause the phone to use the front camera sometimes
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
             fatalError("Error: No back camera found")
         }
         
@@ -126,7 +179,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         requests = [bodyTrackingRequest] // Add the request to the requests array
     }
 
-    // Process the wrist tracking request result
+    // Process the body tracking request result
     private func processBodyTracking(request: VNRequest, error: Error?) {
         guard let results = request.results as? [VNHumanBodyPoseObservation] else { return }
         DispatchQueue.main.async { [weak self] in
@@ -138,20 +191,97 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     .leftHip, .rightHip, .leftKnee, .rightKnee, .leftAnkle, .rightAnkle,
                     .neck
                 ]
+                //for key in allJointNames {
+                //    if let point = try? observation.recognizedPoint(key) {
+                //        self?.displayBodyPoints(point)
+                //    }
+                //}
+                //print(allJointNames)
+                
+                var inputArray = [Float]()
                 for key in allJointNames {
                     if let point = try? observation.recognizedPoint(key) {
                         self?.displayBodyPoints(point)
+                        inputArray.append(Float(point.location.x))
+                        inputArray.append(Float(point.location.y))
+                    } else {
+                        inputArray.append(0)
+                        inputArray.append(0)
                     }
                 }
+
+                //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 2), NSNumber(value: allJointNames.count)], dataType: .float32)
+                //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 1), NSNumber(value: allJointNames.count), NSNumber(value: 2)], dataType: .float32)
+                
+                //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 30), NSNumber(value: 3), NSNumber(value: allJointNames.count)], dataType: .double)
+                let mlArray = try? MLMultiArray(shape: [30, 3, 18], dataType: .float32)
+
+                //for (index, element) in inputArray.enumerated() {
+                //    mlArray?[index] = NSNumber(value: element)
+                //}
+                
+                
+                //for (index, element) in inputArray.enumerated() {
+                //    let zIndex = index % 2
+                //    let yIndex = index / 2
+                //    let flatIndex = zIndex + yIndex * 2
+                //    mlArray?[flatIndex] = NSNumber(value: element)
+                //}
+                
+                for frame in 0..<30 {
+                    //print("this runs 1")
+                    for (index, element) in inputArray.enumerated() {
+                        //print("this runs 2")
+                        let zIndex = index % 2
+                        let yIndex = index / 2
+                        let flatIndex = frame * 18 * 3 + yIndex * 3 + zIndex
+                        mlArray?[flatIndex] = NSNumber(value: element)
+                        if zIndex == 0 {
+                            //print("this runs 3")
+                            mlArray?[flatIndex + 1] = NSNumber(value: 0)
+                            mlArray?[flatIndex + 2] = NSNumber(value: 0)
+                        }
+                    }
+                }
+
+
+                
+                
+
+                if let prediction = try? self?.squatClassifier.prediction(input: SquatClassifierTest1_1Input(poses: mlArray!)) {
+                    //print("this runs 4")
+                    //print("label propertiesL \(prediction.labelProbabilities)")
+                    if let squatProbability = prediction.labelProbabilities["Squats"] {
+                        //print("this runs 55555555")
+                        //print("Squat probability: \(squatProbability)")
+                        //print("Squat probability multi: \(squatProbability * 1000)")
+                        if squatProbability > 0.006 { //this is 60%(I think)
+                            print("Squat detected ihugyftdtfgyuhkiulgyfktdjrfugiholugyftidrfugihogyftidrufugihglyftdru")
+                        }
+                    }
+                }
+                
+                
+                
+                
+                
+                
+                
+        
+                
+                
+                
+                
             }
         }
+        
     }
 
     // Display a detected wrist point on the detectionOverlay
     private func displayBodyPoints(_ point: VNRecognizedPoint) {
         guard point.confidence > 0.3 else { return } // Ignore points with low confidence
 
-        let wristPoint = CGPoint(x: point.location.x, y: 1 - point.location.y) // Convert the point's location
+        let wristPoint = CGPoint(x: 1 - point.location.x, y: 1 - point.location.y) // Convert the point's location
         var transform = CGAffineTransform.identity //
 
         // Set the transform based on the current device orientation
@@ -168,7 +298,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
         // Apply the transform to the point
         let convertedPoint = wristPoint.applying(transform)
+        
+        
+        //print("Recognized point x: \(wristPoint.x), y: \(wristPoint.y)")
 
+        
+        
         // Create a dot layer for the detected point
         let dot = CALayer()
         dot.bounds = CGRect(x: 0, y: 0, width: 12, height: 12)
@@ -197,7 +332,22 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         } catch {
             print("Error: Failed to perform image request handler")
         }
+        
+      
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 
