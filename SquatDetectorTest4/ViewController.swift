@@ -10,8 +10,8 @@ import AVFoundation
 import Vision
 import CoreML
 
-typealias SquatClassifier = SquatClassifierTest1_1
-
+//typealias SquatClassifier = SquatClassifierTest1_1
+typealias SquatClassifier = TheSquatClassifier_1
 // MARK: - ViewController
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -78,7 +78,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     lazy var squatClassifier: SquatClassifier = {
         do {
-            let model = try SquatClassifierTest1_1(configuration: MLModelConfiguration())
+            let model = try TheSquatClassifier_1(configuration: MLModelConfiguration())
             return model
         } catch {
             fatalError("Error initializing SquatClassifier: \(error)")
@@ -185,7 +185,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         DispatchQueue.main.async { [weak self] in
             self?.detectionOverlay.sublayers?.forEach { $0.removeFromSuperlayer() } // Remove all sublayers from the detectionOverlay
             for observation in results {
-                let allJointNames: [VNHumanBodyPoseObservation.JointName] = [
+                let allJointNames: [VNHumanBodyPoseObservation.JointName] = [ //Do NOT remoove joints, the MLMultiArray below is expecting 18 
                     .nose, .leftEye, .rightEye, .leftEar, .rightEar,
                     .leftShoulder, .rightShoulder, .leftElbow, .rightElbow, .leftWrist, .rightWrist,
                     .leftHip, .rightHip, .leftKnee, .rightKnee, .leftAnkle, .rightAnkle,
@@ -201,6 +201,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 var inputArray = [Float]()
                 for key in allJointNames {
                     if let point = try? observation.recognizedPoint(key) {
+                        //print("Joint: \(key), Point: (\(point.location.x), \(point.location.y)")
                         self?.displayBodyPoints(point)
                         inputArray.append(Float(point.location.x))
                         inputArray.append(Float(point.location.y))
@@ -209,7 +210,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         inputArray.append(0)
                     }
                 }
-
+                    
+                //print("the latest point observation: \(observation)")
                 //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 2), NSNumber(value: allJointNames.count)], dataType: .float32)
                 //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 1), NSNumber(value: allJointNames.count), NSNumber(value: 2)], dataType: .float32)
                 
@@ -248,15 +250,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 
                 
 
-                if let prediction = try? self?.squatClassifier.prediction(input: SquatClassifierTest1_1Input(poses: mlArray!)) {
+                if let prediction = try? self?.squatClassifier.prediction(input: TheSquatClassifier_1Input(poses: mlArray!)) {
                     //print("this runs 4")
                     //print("label propertiesL \(prediction.labelProbabilities)")
                     if let squatProbability = prediction.labelProbabilities["Squats"] {
                         //print("this runs 55555555")
                         //print("Squat probability: \(squatProbability)")
                         //print("Squat probability multi: \(squatProbability * 1000)")
-                        if squatProbability > 0.006 { //this is 60%(I think)
+                        print(squatProbability.magnitude)
+                        if squatProbability > 0.015 { //this is 60%(I think)
                             print("Squat detected ihugyftdtfgyuhkiulgyfktdjrfugiholugyftidrfugihogyftidrufugihglyftdru")
+                            
+                            //print("Joint: \()")
                         }
                     }
                 }
