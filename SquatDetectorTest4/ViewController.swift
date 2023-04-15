@@ -11,7 +11,9 @@ import Vision
 import CoreML
 
 //typealias SquatClassifier = SquatClassifierTest1_1
-typealias SquatClassifier = TheSquatClassifier_1
+//typealias SquatClassifier = TheSquatClassifier_1
+typealias SquatClassifier = TheSquatClassifier_2_1
+
 // MARK: - ViewController
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -78,7 +80,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     lazy var squatClassifier: SquatClassifier = {
         do {
-            let model = try TheSquatClassifier_1(configuration: MLModelConfiguration())
+            let model = try TheSquatClassifier_2_1(configuration: MLModelConfiguration())
             return model
         } catch {
             fatalError("Error initializing SquatClassifier: \(error)")
@@ -185,7 +187,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         DispatchQueue.main.async { [weak self] in
             self?.detectionOverlay.sublayers?.forEach { $0.removeFromSuperlayer() } // Remove all sublayers from the detectionOverlay
             for observation in results {
-                let allJointNames: [VNHumanBodyPoseObservation.JointName] = [ //Do NOT remoove joints, the MLMultiArray below is expecting 18 
+                let allJointNames: [VNHumanBodyPoseObservation.JointName] = [ //Do NOT remove joints, the MLMultiArray below is expecting 18 
                     .nose, .leftEye, .rightEye, .leftEar, .rightEar,
                     .leftShoulder, .rightShoulder, .leftElbow, .rightElbow, .leftWrist, .rightWrist,
                     .leftHip, .rightHip, .leftKnee, .rightKnee, .leftAnkle, .rightAnkle,
@@ -250,21 +252,37 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 
                 
 
-                if let prediction = try? self?.squatClassifier.prediction(input: TheSquatClassifier_1Input(poses: mlArray!)) {
-                    //print("this runs 4")
-                    //print("label propertiesL \(prediction.labelProbabilities)")
-                    if let squatProbability = prediction.labelProbabilities["Squats"] {
+                if let prediction = try? self?.squatClassifier.prediction(input: TheSquatClassifier_2_1Input(poses: mlArray!)) {
+                //print("this runs 4")
+                //print("label propertiesL \(prediction.labelProbabilities)")
+                                    
+                //if prediction.label == "Squats" && prediction.l
+                                    
+                                    
+                                    
+                    if prediction.labelProbabilities["Squats"] != nil {
                         //print("this runs 55555555")
                         //print("Squat probability: \(squatProbability)")
                         //print("Squat probability multi: \(squatProbability * 1000)")
-                        print(squatProbability.magnitude)
-                        if squatProbability > 0.015 { //this is 60%(I think)
-                            print("Squat detected ihugyftdtfgyuhkiulgyfktdjrfugiholugyftidrfugihogyftidrufugihglyftdru")
-                            
-                            //print("Joint: \()")
+                        //print("This is the PROBABILITY \(squatProbability)")
+                        //print(squatProbability)
+                        //print("This is subtracted \(1 - squatProbability)")
+                        //print("This is the label \(prediction.label)")
+                        //print("OTHER probability: \(String(describing: prediction.labelProbabilities["Other"]))")
+                        print("SQUATS probability: \(String(describing: prediction.labelProbabilities["Squats"]))")
+                        print("The input array: \(inputArray) of length \(inputArray.count)")
+                        if prediction.labelProbabilities["Squats"]! > 0.00020 {
+                            print("Squat Detected")
                         }
+                            //if squatProbability > 0.006 && (prediction.label == "Squats") { //this is 60%(I think)
+                            //    print("Squat detected ihugyftdtfgyuhkiulgyfktdjrfugiholugyftidrfugihogyftidrufugihglyftdru")
+                                            
+                                            //print("Joint: \()")
+                        //}
                     }
                 }
+
+                
                 
                 
                 
