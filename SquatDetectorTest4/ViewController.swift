@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 import Vision
 import CoreML
+import Foundation
 
 //typealias SquatClassifier = SquatClassifierTest1_1
 //typealias SquatClassifier = TheSquatClassifier_1
@@ -74,10 +75,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     
     
-    
-    
-    
-    
     lazy var squatClassifier: SquatClassifier = {
         do {
             let model = try TheSquatClassifier_2_1(configuration: MLModelConfiguration())
@@ -90,12 +87,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
     
 
-
-    
-
-    
-    
-    
     
     
     // MARK: - UI Setup
@@ -111,6 +102,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             cameraPreview.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.9)
         ])
         //print("the views resolution\(cameraPreview.frame.size.height) x \(cameraPreview.frame.size.width)")
+        //view.addSubview(shareButton)
+        NSLayoutConstraint.activate([
+        //    shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        //    shareButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+        ])
     }
     
     // MARK: - Camera Setup
@@ -181,6 +177,16 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         requests = [bodyTrackingRequest] // Add the request to the requests array
     }
 
+    
+    
+    
+    private var squatNumber = 0
+    private var isSquatOngoing = false
+    private var squatData = [[Float]]()
+    private var noSquatFrameCounter = 0
+    private var previousPoints = [[Float]]()
+
+    
     // Process the body tracking request result
     private func processBodyTracking(request: VNRequest, error: Error?) {
         guard let results = request.results as? [VNHumanBodyPoseObservation] else { return }
@@ -193,12 +199,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     .leftHip, .rightHip, .leftKnee, .rightKnee, .leftAnkle, .rightAnkle,
                     .neck
                 ]
-                //for key in allJointNames {
-                //    if let point = try? observation.recognizedPoint(key) {
-                //        self?.displayBodyPoints(point)
-                //    }
-                //}
-                //print(allJointNames)
+
                 
                 var inputArray = [Float]()
                 for key in allJointNames {
@@ -213,24 +214,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     }
                 }
                     
-                //print("the latest point observation: \(observation)")
-                //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 2), NSNumber(value: allJointNames.count)], dataType: .float32)
-                //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 1), NSNumber(value: allJointNames.count), NSNumber(value: 2)], dataType: .float32)
-                
-                //let mlArray = try? MLMultiArray(shape: [NSNumber(value: 30), NSNumber(value: 3), NSNumber(value: allJointNames.count)], dataType: .double)
+
                 let mlArray = try? MLMultiArray(shape: [30, 3, 18], dataType: .float32)
 
-                //for (index, element) in inputArray.enumerated() {
-                //    mlArray?[index] = NSNumber(value: element)
-                //}
-                
-                
-                //for (index, element) in inputArray.enumerated() {
-                //    let zIndex = index % 2
-                //    let yIndex = index / 2
-                //    let flatIndex = zIndex + yIndex * 2
-                //    mlArray?[flatIndex] = NSNumber(value: element)
-                //}
+       
                 
                 for frame in 0..<30 {
                     //print("this runs 1")
@@ -253,52 +240,135 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 
 
                 if let prediction = try? self?.squatClassifier.prediction(input: TheSquatClassifier_2_1Input(poses: mlArray!)) {
-                //print("this runs 4")
-                //print("label propertiesL \(prediction.labelProbabilities)")
-                                    
-                //if prediction.label == "Squats" && prediction.l
-                                    
-                                    
+                 
                                     
                     if prediction.labelProbabilities["Squats"] != nil {
-                        //print("this runs 55555555")
-                        //print("Squat probability: \(squatProbability)")
-                        //print("Squat probability multi: \(squatProbability * 1000)")
-                        //print("This is the PROBABILITY \(squatProbability)")
-                        //print(squatProbability)
-                        //print("This is subtracted \(1 - squatProbability)")
-                        //print("This is the label \(prediction.label)")
-                        //print("OTHER probability: \(String(describing: prediction.labelProbabilities["Other"]))")
-                        print("SQUATS probability: \(String(describing: prediction.labelProbabilities["Squats"]))")
-                        print("The input array: \(inputArray) of length \(inputArray.count)")
-                        if prediction.labelProbabilities["Squats"]! > 0.00020 {
-                            print("Squat Detected")
-                        }
-                            //if squatProbability > 0.006 && (prediction.label == "Squats") { //this is 60%(I think)
-                            //    print("Squat detected ihugyftdtfgyuhkiulgyfktdjrfugiholugyftidrfugihogyftidrufugihglyftdru")
-                                            
-                                            //print("Joint: \()")
+                        
+                        //print("SQUATS probability: \(String(describing: prediction.labelProbabilities["Squats"]))")
+                        //print("The input array: \(inputArray) of length \(inputArray.count)")
+                        //if prediction.labelProbabilities["Squats"]! > 0.00020 {
+                        //    print("Squat Detected")
+                        //    self?.saveCSV(inputArray: inputArray)
                         //}
+                        print(self!.noSquatFrameCounter)
+                        print(prediction.labelProbabilities["Squats"]!)
+                        if prediction.labelProbabilities["Squats"]! > 0.0020 {
+                            print("SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED")
+                            if !self!.isSquatOngoing {
+                                self!.isSquatOngoing = true
+                                self!.squatNumber += 1
+                                self!.squatData = []
+                            }
+                            if (self!.previousPoints.count != 0) {
+                                self!.squatData.append(contentsOf: self!.previousPoints)
+                                self!.previousPoints.removeAll()
+                            }
+                            self!.squatData.append(inputArray)
+                            self!.noSquatFrameCounter = 0
+                                                    
+                            } else {// If squat is not detected
+                                if (self!.previousPoints.count > 5) {
+                                    self!.previousPoints.removeAll()
+                                }
+                                self!.previousPoints.append(inputArray)
+                                
+                                if self!.isSquatOngoing {
+                                    self!.noSquatFrameCounter += 1
+
+                                    if self!.noSquatFrameCounter >= 10 {
+                                            self!.isSquatOngoing = false
+                                            self!.saveCSV(inputArrays: self!.squatData)
+                                            self!.squatData.removeAll()
+                                    }
+                                }
+                       //     if !self!.isSquatOngoing {
+                       //         self!.isSquatOngoing = true
+                       //         self!.squatNumber += 1
+                       //     }
+                       //     self!.squatData.append(inputArray)
+                       // } else if self!.isSquatOngoing {
+                       //     self!.isSquatOngoing = false
+                       //     self!.saveCSV(inputArrays: self!.squatData)
+                       //     self!.squatData.removeAll()
+                            
+                            
+                            
+                            
+                        }
+
                     }
                 }
-
-                
-                
-                
-                
-                
-                
-                
-                
-        
-                
-                
-                
-                
             }
         }
-        
     }
+    
+    func saveCSV(inputArrays: [[Float]]) {
+        // Get the app's documents directory
+        let fileManager = FileManager.default
+        guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Error: Could not find the app's documents directory")
+            return
+        }
+
+        // Check if the documents directory exists and create it if it doesn't
+        if !fileManager.fileExists(atPath: documentsURL.path) {
+            do {
+                try fileManager.createDirectory(at: documentsURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print("Error: Could not create the app's documents directory: \(error)")
+                return
+            }
+        }
+
+        // Create the CSV file
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
+        let dateString = dateFormatter.string(from: Date())
+        let fileName = "squat_\(dateString).csv"
+        let fileURL = documentsURL.appendingPathComponent(fileName)
+
+        // Convert the inputArrays to a CSV string
+        var csvString = ""
+        for inputArray in inputArrays {
+            let row = inputArray.map { String($0) }.joined(separator: ",")
+            csvString.append(row + "\n")
+        }
+
+        // Save the CSV string to the file
+        do {
+            try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+            print("CSV file saved successfully at \(fileURL)")
+        } catch {
+            print("Error: Could not save the CSV file: \(error)")
+        }
+    }
+
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     // Display a detected wrist point on the detectionOverlay
     private func displayBodyPoints(_ point: VNRecognizedPoint) {
