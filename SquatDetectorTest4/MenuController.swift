@@ -35,7 +35,7 @@ class MenuController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Share Latest CSV", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside) //Ignore the warning you may get here, if you use the suggested fix the app will crash
         return button
     }()
     
@@ -43,7 +43,7 @@ class MenuController: UIViewController {
     private let showFilesButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Show Files", for: .normal)
-        button.addTarget(self, action: #selector(showFilesList), for: .touchUpInside)
+        button.addTarget(self, action: #selector(showFilesList), for: .touchUpInside) //Ignore the warning you may get here, if you use the suggested fix the app will crash
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -81,27 +81,5 @@ class MenuController: UIViewController {
         let activityViewController = UIActivityViewController(activityItems: [latestCSVFile], applicationActivities: nil)
         present(activityViewController, animated: true, completion: nil)
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
