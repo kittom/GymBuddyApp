@@ -179,7 +179,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         movieFileOutput.stopRecording()
     }
     
-    var lastSavedVideo: String?
+    //var lastSavedVideo: String?
     
     func saveVideoToLibrary(outputFileURL: URL) {
         PHPhotoLibrary.requestAuthorization { status in
@@ -189,12 +189,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
             }, completionHandler: { success, error in
                 if success {
-                    let fetchResult = PHAsset.fetchAssets(with: .video, options: nil)
-                    if let lastAsset = fetchResult.lastObject {
-                        self.lastSavedVideo = lastAsset.localIdentifier
-                    } else {
-                        print("Error fetching video to delete")
-                    }
                     
                     print("Video saved to library")
                 } else {
@@ -202,44 +196,39 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 }
             })
         }
+        saveType = ""
     }
     
-    func deleteVideoFromLibrary(localIdentifier: String?) {
-        guard let localIdentifier = localIdentifier else {
-            print("Local identifier is nil")
-            return
+    func saveVideoToDocumentsDirectory(inputFileURL: URL) -> URL? {
+        let fileManager = FileManager.default
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first
+        
+        guard let destinationURL = documentsURL?.appendingPathComponent("delete_\(squatCounter).mov") else {
+            print("Error creating destination URL")
+            return nil
         }
         
-        PHPhotoLibrary.requestAuthorization { status in
-            switch status {
-            case .authorized:
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", localIdentifier)
-                let assets = PHAsset.fetchAssets(with: .video, options: fetchOptions)
-                
-                if let assetToDelete = assets.firstObject {
-                    PHPhotoLibrary.shared().performChanges({
-                        PHAssetChangeRequest.deleteAssets([assetToDelete] as NSArray)
-                    }) { success, error in
-                        if success {
-                            print("Video deleted from Photo Library")
-                        } else {
-                            print("Error deleting video from Photo Library: \(String(describing: error))")
-                        }
-                    }
-                } else {
-                    print("Video not found in Photo Library")
-                }
-                
-            case .denied, .restricted, .notDetermined, .limited:
-                print("Photo Library access not granted")
-                //break
-            
-            @unknown default:
-                print("Unknown Photo Library authorization status")
-            }
+        do {
+            try fileManager.copyItem(at: inputFileURL, to: destinationURL)
+            print("Video file saved to Documents directory")
+            return destinationURL
+        } catch {
+            print("Error saving video file to Documents directory: \(error)")
+            return nil
         }
     }
+    
+    func deleteVideoFile(at fileURL: URL) {
+        let fileManager = FileManager.default
+        do {
+            try fileManager.removeItem(at: fileURL)
+            print("Video file deleted")
+        } catch {
+            print("Error deleting video file: \(error)")
+        }
+        saveType = ""
+    }
+
     
     // MARK: - Vision Setup
     private func setupVision() {
@@ -255,6 +244,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     private var squatData = [[Float]]()
     private var noSquatFrameCounter = 0
     private var previousPoints = [[Float]]()
+    
+    var saveType = ""
     
     // Process the body tracking request result
     private func processBodyTracking(request: VNRequest, error: Error?) {
@@ -304,17 +295,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     
                     if prediction.labelProbabilities["Squats"] != nil {
                    
-                        print(self!.noSquatFrameCounter)
-                        print(prediction.labelProbabilities["Squats"]!)
+                        //print(self!.noSquatFrameCounter)
+                        //print(prediction.labelProbabilities["Squats"]!)
                         
                   
-                        if prediction.labelProbabilities["Squats"]! > 0.0020 {
+                        if prediction.labelProbabilities["Squats"]! > 0.0002 {
                             print("SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED")
                             if !self!.isSquatOngoing {
                                 self!.isSquatOngoing = true
                                 self!.squatNumber += 1
                                 self!.squatData = []
-                                self!.startRecordingVideo()
+                                //self!.startRecordingVideo()
                             }
                             if (self!.previousPoints.count != 0) {
                                 self!.squatData.append(contentsOf: self!.previousPoints)
@@ -324,14 +315,16 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                             self!.noSquatFrameCounter = 0
                                                     
                         } else {// If squat is not detected
-                            if (self!.previousPoints.count >= 10) {
+                            if (self!.previousPoints.count >= 15) {
                                 self!.previousPoints.removeAll()
                                 self!.stopRecordingVideo()
                                 //self?.deleteVideoFromLibrary(localIdentifier: self!.lastSavedVideo)
                                 //STOP RECORDING AND DELTE VIDEO HERE
+                                self!.saveType = "fileManager"
+                                self!.stopRecordingVideo()
                             }
                             self!.previousPoints.append(inputArray)
-                            //self!.startRecordingVideo()
+                            self!.startRecordingVideo()
                             //START RECORDING HERE
                             if self!.isSquatOngoing {
                                 self!.noSquatFrameCounter += 1
@@ -339,10 +332,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                 self!.previousPoints.removeAll()
                                 
                                 if self!.noSquatFrameCounter >= 10 {
-                                        self!.isSquatOngoing = false
-                                        self!.saveCSV(inputArrays: self!.squatData)
-                                        self!.squatData.removeAll()
-                                        self!.stopRecordingVideo()
+                                    self!.isSquatOngoing = false
+                                    self!.setDate()
+                                    self!.saveCSV(inputArrays: self!.squatData)
+                                    self!.squatData.removeAll()
+                                    self!.saveType = "library"
+                                    self!.stopRecordingVideo()
                                 }
                             }
                         }
@@ -371,11 +366,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
         }
 
-        // Create the CSV file
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
-        let dateString = dateFormatter.string(from: Date())
-        //let fileName = "squat_\(dateString).csv"
         let fileName = "squat_\(theCurrentDate)_\(squatCounter)"
         let fileURL = documentsURL.appendingPathComponent(fileName)
 
@@ -457,7 +447,16 @@ extension ViewController: AVCaptureFileOutputRecordingDelegate {
         if let error = error {
             print("Error recording movie: \(error.localizedDescription)")
         } else {
-            saveVideoToLibrary(outputFileURL: outputFileURL)
+            if saveType == "library" {
+                saveVideoToLibrary(outputFileURL: outputFileURL)
+            } else if saveType == "fileManager"{
+                deleteVideoFile(at: saveVideoToDocumentsDirectory(inputFileURL: outputFileURL)!)
+                //saveVideoToDocumentsDirectory(inputFileURL: outputFileURL)
+            } else {
+                print("Something has gone very wrong if you make it here")
+            }
+            
+            //saveVideoToLibrary(outputFileURL: outputFileURL)
         }
         
     }
