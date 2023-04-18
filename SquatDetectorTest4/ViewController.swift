@@ -314,7 +314,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                 self!.isSquatOngoing = true
                                 self!.squatNumber += 1
                                 self!.squatData = []
-                                //self!.startRecordingVideo()
+                                self!.startRecordingVideo()
                             }
                             if (self!.previousPoints.count != 0) {
                                 self!.squatData.append(contentsOf: self!.previousPoints)
@@ -327,11 +327,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                             if (self!.previousPoints.count >= 10) {
                                 self!.previousPoints.removeAll()
                                 self!.stopRecordingVideo()
-                                self?.deleteVideoFromLibrary(localIdentifier: self!.lastSavedVideo)
+                                //self?.deleteVideoFromLibrary(localIdentifier: self!.lastSavedVideo)
                                 //STOP RECORDING AND DELTE VIDEO HERE
                             }
                             self!.previousPoints.append(inputArray)
-                            self!.startRecordingVideo()
+                            //self!.startRecordingVideo()
                             //START RECORDING HERE
                             if self!.isSquatOngoing {
                                 self!.noSquatFrameCounter += 1
