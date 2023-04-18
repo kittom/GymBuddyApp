@@ -10,6 +10,8 @@ import AVFoundation
 import Vision
 import CoreML
 import Foundation
+import Photos
+
 
 //typealias SquatClassifier = SquatClassifierTest1_1
 //typealias SquatClassifier = TheSquatClassifier_1
@@ -43,6 +45,14 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     private var requests = [VNRequest]() // Array of vision requests
     
     private var didPrintSizeAndResolution = false
+    
+    
+    private var squatCounter = 0
+    
+    private var movieFileOutput: AVCaptureMovieFileOutput!
+    
+    
+    
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -86,7 +96,14 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
 
     
+    func setDate() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
+        let dateString = dateFormatter.string(from: Date())
+        theCurrentDate = dateString
+    }
 
+    var theCurrentDate = ""
     
     
     // MARK: - UI Setup
@@ -101,12 +118,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             cameraPreview.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1),
             cameraPreview.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.9)
         ])
-        //print("the views resolution\(cameraPreview.frame.size.height) x \(cameraPreview.frame.size.width)")
-        //view.addSubview(shareButton)
-        NSLayoutConstraint.activate([
-        //    shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-        //    shareButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        ])
+        
     }
     
     // MARK: - Camera Setup
@@ -164,10 +176,116 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         previewLayer.frame = view.bounds
         detectionOverlay.bounds = previewLayer.bounds
         detectionOverlay.position = CGPoint(x: previewLayer.bounds.midX, y: previewLayer.bounds.midY)
+        
+        
+        movieFileOutput = AVCaptureMovieFileOutput()
+
+        if captureSession.canAddOutput(movieFileOutput) {
+            captureSession.addOutput(movieFileOutput)
+        } else {
+            fatalError("Error: Could not add AVCaptureMovieFileOutput to captureSession")
+        }
+
 
         captureSession.startRunning() // Start the capture session
     }
 
+    
+    func startRecordingVideo() {
+        guard let connection = movieFileOutput.connection(with: .video) else { return }
+        if connection.isVideoOrientationSupported {
+            connection.videoOrientation = AVCaptureVideoOrientation(rawValue: 1)!
+            
+        }
+        
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
+        //let fileName = "squat_\(dateFormatter.string(from: Date())).mov"
+        let fileName = "squat_\(theCurrentDate)_\(squatCounter)"
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mov")
+        movieFileOutput.startRecording(to: outputURL, recordingDelegate: self)
+    }
+
+    func stopRecordingVideo() {
+        movieFileOutput.stopRecording()
+    }
+    
+    var lastSavedVideo: String?
+    
+    func saveVideoToLibrary(outputFileURL: URL) {
+        PHPhotoLibrary.requestAuthorization { status in
+            guard status == .authorized else { return }
+
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
+            }, completionHandler: { success, error in
+                if success {
+                    let fetchResult = PHAsset.fetchAssets(with: .video, options: nil)
+                    if let lastAsset = fetchResult.lastObject {
+                        self.lastSavedVideo = lastAsset.localIdentifier
+                    } else {
+                        print("Error fetching video to delete")
+                    }
+                    
+                    
+                    print("Video saved to library")
+                } else {
+                    print("Error saving video to library: \(String(describing: error))")
+                }
+            })
+        }
+       
+    }
+    
+    func deleteVideoFromLibrary(localIdentifier: String?) {
+        guard let localIdentifier = localIdentifier else {
+            print("Local identifier is nil")
+            return
+        }
+        
+        PHPhotoLibrary.requestAuthorization { status in
+            switch status {
+            case .authorized:
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", localIdentifier)
+                let assets = PHAsset.fetchAssets(with: .video, options: fetchOptions)
+                
+                if let assetToDelete = assets.firstObject {
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetChangeRequest.deleteAssets([assetToDelete] as NSArray)
+                    }) { success, error in
+                        if success {
+                            print("Video deleted from Photo Library")
+                        } else {
+                            print("Error deleting video from Photo Library: \(String(describing: error))")
+                        }
+                    }
+                } else {
+                    print("Video not found in Photo Library")
+                }
+                
+            case .denied, .restricted, .notDetermined, .limited:
+                print("Photo Library access not granted")
+                //break
+            
+            @unknown default:
+                print("Unknown Photo Library authorization status")
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - Vision Setup
     private func setupVision() {
         // Create a body pose detection request
@@ -185,7 +303,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     private var squatData = [[Float]]()
     private var noSquatFrameCounter = 0
     private var previousPoints = [[Float]]()
-
+    //var urlToDelete: URL?
     
     // Process the body tracking request result
     private func processBodyTracking(request: VNRequest, error: Error?) {
@@ -244,20 +362,19 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                     
                     if prediction.labelProbabilities["Squats"] != nil {
                         
-                        //print("SQUATS probability: \(String(describing: prediction.labelProbabilities["Squats"]))")
-                        //print("The input array: \(inputArray) of length \(inputArray.count)")
-                        //if prediction.labelProbabilities["Squats"]! > 0.00020 {
-                        //    print("Squat Detected")
-                        //    self?.saveCSV(inputArray: inputArray)
-                        //}
+                    
                         print(self!.noSquatFrameCounter)
                         print(prediction.labelProbabilities["Squats"]!)
+                        
+                  
+                        
                         if prediction.labelProbabilities["Squats"]! > 0.0020 {
                             print("SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED")
                             if !self!.isSquatOngoing {
                                 self!.isSquatOngoing = true
                                 self!.squatNumber += 1
                                 self!.squatData = []
+                                //self!.startRecordingVideo()
                             }
                             if (self!.previousPoints.count != 0) {
                                 self!.squatData.append(contentsOf: self!.previousPoints)
@@ -266,36 +383,29 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                             self!.squatData.append(inputArray)
                             self!.noSquatFrameCounter = 0
                                                     
-                            } else {// If squat is not detected
-                                if (self!.previousPoints.count > 5) {
-                                    self!.previousPoints.removeAll()
-                                }
-                                self!.previousPoints.append(inputArray)
+                        } else {// If squat is not detected
+                            if (self!.previousPoints.count >= 10) {
+                                self!.previousPoints.removeAll()
+                                self!.stopRecordingVideo()
+                                self?.deleteVideoFromLibrary(localIdentifier: self!.lastSavedVideo)
+                                //STOP RECORDING AND DELTE VIDEO HERE
+                            }
+                            self!.previousPoints.append(inputArray)
+                            self!.startRecordingVideo()
+                            //START RECORDING HERE
+                            if self!.isSquatOngoing {
+                                self!.noSquatFrameCounter += 1
+                                self!.squatData.append(inputArray)
+                                self!.previousPoints.removeAll()
                                 
-                                if self!.isSquatOngoing {
-                                    self!.noSquatFrameCounter += 1
-
-                                    if self!.noSquatFrameCounter >= 10 {
-                                            self!.isSquatOngoing = false
-                                            self!.saveCSV(inputArrays: self!.squatData)
-                                            self!.squatData.removeAll()
-                                    }
+                                if self!.noSquatFrameCounter >= 10 {
+                                        self!.isSquatOngoing = false
+                                        self!.saveCSV(inputArrays: self!.squatData)
+                                        self!.squatData.removeAll()
+                                        self!.stopRecordingVideo()
                                 }
-                       //     if !self!.isSquatOngoing {
-                       //         self!.isSquatOngoing = true
-                       //         self!.squatNumber += 1
-                       //     }
-                       //     self!.squatData.append(inputArray)
-                       // } else if self!.isSquatOngoing {
-                       //     self!.isSquatOngoing = false
-                       //     self!.saveCSV(inputArrays: self!.squatData)
-                       //     self!.squatData.removeAll()
-                            
-                            
-                            
-                            
+                            }
                         }
-
                     }
                 }
             }
@@ -304,6 +414,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func saveCSV(inputArrays: [[Float]]) {
         // Get the app's documents directory
+        squatCounter += 1
         let fileManager = FileManager.default
         guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             print("Error: Could not find the app's documents directory")
@@ -324,7 +435,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
         let dateString = dateFormatter.string(from: Date())
-        let fileName = "squat_\(dateString).csv"
+        //let fileName = "squat_\(dateString).csv"
+        let fileName = "squat_\(theCurrentDate)_\(squatCounter)"
         let fileURL = documentsURL.appendingPathComponent(fileName)
 
         // Convert the inputArrays to a CSV string
@@ -346,29 +458,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
     
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     // Display a detected wrist point on the detectionOverlay
     private func displayBodyPoints(_ point: VNRecognizedPoint) {
@@ -431,16 +520,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 
+
+extension ViewController: AVCaptureFileOutputRecordingDelegate {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        if let error = error {
+            print("Error recording movie: \(error.localizedDescription)")
+        } else {
+            saveVideoToLibrary(outputFileURL: outputFileURL)
+        }
+        
+    }
+}
 
