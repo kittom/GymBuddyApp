@@ -12,9 +12,6 @@ import CoreML
 import Foundation
 import Photos
 
-
-//typealias SquatClassifier = SquatClassifierTest1_1
-//typealias SquatClassifier = TheSquatClassifier_1
 typealias SquatClassifier = TheSquatClassifier_2_1
 
 // MARK: - ViewController
@@ -22,38 +19,22 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     // Camera preview view which shows the live feed from the device's camera
 
-    
     private let cameraPreview: UIView = {
             let view = UIView() // Uses the default UIView pre made by Xcode
             view.translatesAutoresizingMaskIntoConstraints = false // Stops constraints being automatically made
             return view
         }()
-
-    
-    
     
     private var detectionOverlay: CALayer! // Layer for showing detected recognized points
     private var rootLayer: CALayer! // Bottom layer for the cameraPreview view
-    
-    // Properties of the dot showng recognised points
-    
-    
     private let captureSession = AVCaptureSession() // Capture session for video input and output
     private var videoDataOutput = AVCaptureVideoDataOutput() // Video data output for capturing video frames
     private var videoDataOutputQueue = DispatchQueue(label: "VideoDataOutputQueue") // Queue for processing video frames
-    
     private var requests = [VNRequest]() // Array of vision requests
-    
     private var didPrintSizeAndResolution = false
-    
-    
     private var squatCounter = 0
-    
     private var movieFileOutput: AVCaptureMovieFileOutput!
     
-    
-    
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -71,7 +52,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
     }
     
-    
     // Called when the view controller is loaded
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,11 +60,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         setupUI() // Set up UI
         
     }
-    
-    
-    
-    
-    
+
     lazy var squatClassifier: SquatClassifier = {
         do {
             let model = try TheSquatClassifier_2_1(configuration: MLModelConfiguration())
@@ -94,8 +70,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
     }()
 
-
-    
     func setDate() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
@@ -104,7 +78,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 
     var theCurrentDate = ""
-    
     
     // MARK: - UI Setup
     private func setupUI() {
@@ -118,13 +91,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             cameraPreview.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1),
             cameraPreview.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.9)
         ])
-        
     }
     
     // MARK: - Camera Setup
     private func setupCamera() {
         captureSession.sessionPreset = .hd1920x1080 // Set the capture session preset to 1080p
-        
         // Get the back camera of the device
         // This can be changed to default camera however this can cause the phone to use the front camera sometimes
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
@@ -177,7 +148,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         detectionOverlay.bounds = previewLayer.bounds
         detectionOverlay.position = CGPoint(x: previewLayer.bounds.midX, y: previewLayer.bounds.midY)
         
-        
         movieFileOutput = AVCaptureMovieFileOutput()
 
         if captureSession.canAddOutput(movieFileOutput) {
@@ -190,14 +160,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureSession.startRunning() // Start the capture session
     }
 
-    
     func startRecordingVideo() {
         guard let connection = movieFileOutput.connection(with: .video) else { return }
         if connection.isVideoOrientationSupported {
             connection.videoOrientation = AVCaptureVideoOrientation(rawValue: 1)!
             
         }
-        
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
@@ -228,14 +196,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         print("Error fetching video to delete")
                     }
                     
-                    
                     print("Video saved to library")
                 } else {
                     print("Error saving video to library: \(String(describing: error))")
                 }
             })
         }
-       
     }
     
     func deleteVideoFromLibrary(localIdentifier: String?) {
@@ -275,17 +241,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     // MARK: - Vision Setup
     private func setupVision() {
         // Create a body pose detection request
@@ -295,15 +250,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         requests = [bodyTrackingRequest] // Add the request to the requests array
     }
 
-    
-    
-    
     private var squatNumber = 0
     private var isSquatOngoing = false
     private var squatData = [[Float]]()
     private var noSquatFrameCounter = 0
     private var previousPoints = [[Float]]()
-    //var urlToDelete: URL?
     
     // Process the body tracking request result
     private func processBodyTracking(request: VNRequest, error: Error?) {
@@ -318,7 +269,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     .neck
                 ]
 
-                
                 var inputArray = [Float]()
                 for key in allJointNames {
                     if let point = try? observation.recognizedPoint(key) {
@@ -332,11 +282,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     }
                 }
                     
-
                 let mlArray = try? MLMultiArray(shape: [30, 3, 18], dataType: .float32)
 
-       
-                
                 for frame in 0..<30 {
                     //print("this runs 1")
                     for (index, element) in inputArray.enumerated() {
@@ -353,21 +300,14 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     }
                 }
 
-
-                
-                
-
                 if let prediction = try? self?.squatClassifier.prediction(input: TheSquatClassifier_2_1Input(poses: mlArray!)) {
-                 
-                                    
-                    if prediction.labelProbabilities["Squats"] != nil {
-                        
                     
+                    if prediction.labelProbabilities["Squats"] != nil {
+                   
                         print(self!.noSquatFrameCounter)
                         print(prediction.labelProbabilities["Squats"]!)
                         
                   
-                        
                         if prediction.labelProbabilities["Squats"]! > 0.0020 {
                             print("SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED SQUAT DETECTED")
                             if !self!.isSquatOngoing {
@@ -456,9 +396,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 
 
-    
-
-
     // Display a detected wrist point on the detectionOverlay
     private func displayBodyPoints(_ point: VNRecognizedPoint) {
         guard point.confidence > 0.3 else { return } // Ignore points with low confidence
@@ -480,11 +417,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
         // Apply the transform to the point
         let convertedPoint = wristPoint.applying(transform)
-        
-        
-        //print("Recognized point x: \(wristPoint.x), y: \(wristPoint.y)")
-
-        
         
         // Create a dot layer for the detected point
         let dot = CALayer()
@@ -515,13 +447,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             print("Error: Failed to perform image request handler")
         }
         
-      
+
     }
     
-    
-    
 }
-
 
 extension ViewController: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
