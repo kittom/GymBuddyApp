@@ -203,7 +203,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first
         
-        guard let destinationURL = documentsURL?.appendingPathComponent("delete_\(squatCounter).mov") else {
+        guard let destinationURL = documentsURL?.appendingPathComponent("squat_\(theCurrentDate)_\(squatCounter).mov") else {
             print("Error creating destination URL")
             return nil
         }
@@ -320,7 +320,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                 self!.stopRecordingVideo()
                                 //self?.deleteVideoFromLibrary(localIdentifier: self!.lastSavedVideo)
                                 //STOP RECORDING AND DELTE VIDEO HERE
-                                self!.saveType = "fileManager"
+                                self!.saveType = "delete" //change to delete
                                 self!.stopRecordingVideo()
                             }
                             self!.previousPoints.append(inputArray)
@@ -337,7 +337,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                     self!.setDate()
                                     self!.saveCSV(inputArrays: self!.squatData)
                                     self!.squatData.removeAll()
-                                    self!.saveType = "library"
+                                    self!.saveType = "save" //change to save
                                     self!.stopRecordingVideo()
                                 }
                             }
@@ -479,6 +479,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
 
     }
+    //var theVideoURL = URL(string: "")
     
 }
 
@@ -487,10 +488,12 @@ extension ViewController: AVCaptureFileOutputRecordingDelegate {
         if let error = error {
             print("Error recording movie: \(error.localizedDescription)")
         } else {
-            if saveType == "library" {
-                saveVideoToLibrary(outputFileURL: outputFileURL)
-            } else if saveType == "fileManager"{
-                deleteVideoFile(at: saveVideoToDocumentsDirectory(inputFileURL: outputFileURL)!)
+            if saveType == "save" { //change to save
+                //aveVideoToLibrary(outputFileURL: outputFileURL) //use savevid to documents function then pass restult into another function
+                // storeurl (saveVideoToLibrary(outputFileURL: outputFileURL))
+                let theVideoURL = saveVideoToDocumentsDirectory(inputFileURL: outputFileURL)!
+            } else if saveType == "delete" { //change to delete
+                deleteVideoFile(at: saveVideoToDocumentsDirectory(inputFileURL: outputFileURL)!) // leave this one
                 //saveVideoToDocumentsDirectory(inputFileURL: outputFileURL)
             } else {
                 print("Something has gone very wrong if you make it here")
