@@ -295,7 +295,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     
                     if prediction.labelProbabilities["Squats"] != nil {
                    
-                        //print(self!.noSquatFrameCounter)
+                        print(self!.noSquatFrameCounter)
                         //print(prediction.labelProbabilities["Squats"]!)
                         
                   
@@ -331,7 +331,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                 self!.squatData.append(inputArray)
                                 self!.previousPoints.removeAll()
                                 
-                                if self!.noSquatFrameCounter >= 10 {
+                                if self!.noSquatFrameCounter >= 15 {
+                                    self!.noSquatFrameCounter = 0
                                     self!.isSquatOngoing = false
                                     self!.setDate()
                                     self!.saveCSV(inputArrays: self!.squatData)
@@ -366,15 +367,54 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
         }
 
-        let fileName = "squat_\(theCurrentDate)_\(squatCounter)"
+        let fileName = "squat_\(theCurrentDate)_\(squatCounter).csv"
         let fileURL = documentsURL.appendingPathComponent(fileName)
 
         // Convert the inputArrays to a CSV string
+        
+        var tempInputArrays = inputArrays
+        var jointsNamesArray = ["NoseX", "NoseY",
+                                "LeftEyeX", "LeftEyeY",
+                                "RightEyeX", "RightEyeY",
+                                "LeftEarX", "LeftEarY",
+                                "RightEarX", "RightEarY",
+                                "LeftShoulderX", "LeftShoulderY",
+                                "RightShoulderX", "RightShoulderY",
+                                "LeftElbowX", "LeftElbowY",
+                                "RightElbowX", "RightElbowY",
+                                "LeftWristX", "LeftWristY",
+                                "RightWristX", "RightWristY",
+                                "LeftHipX", "LeftHipY",
+                                "RightHipX", "RightHipY",
+                                "LeftKneeX", "LeftKneeY",
+                                "RightKneeX", "RightKneeY",
+                                "LeftAnkleX", "LeftAnkleY",
+                                "RightAnkleX", "RightAnkleY",
+                                "NeckX", "NeckY"]
+        
+     
+        let stringInputArrays = tempInputArrays.map { $0.map {String($0) } }
+        
+        
+      
+        
+        var newInputArrays = [[String]]()
+        newInputArrays.append(jointsNamesArray)
+       
+        
+        
+        for theCurrentArray in stringInputArrays {
+            newInputArrays.append(theCurrentArray)
+        }
+        
         var csvString = ""
-        for inputArray in inputArrays {
-            let row = inputArray.map { String($0) }.joined(separator: ",")
+        for inputArray in newInputArrays {
+            //let row = inputArray.map { String($0) }.joined(separator: ",")
+            let row = inputArray.joined(separator: ",")
             csvString.append(row + "\n")
         }
+        
+      
 
         // Save the CSV string to the file
         do {
