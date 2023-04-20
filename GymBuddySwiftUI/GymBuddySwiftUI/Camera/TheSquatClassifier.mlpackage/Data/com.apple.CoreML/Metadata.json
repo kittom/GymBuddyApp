@@ -1,0 +1,15 @@
+{
+  "MLModelCreatorDefinedKey" : {
+    "target" : "label",
+    "Target Frame Rate" : "30.0",
+    "com.apple.coreml.model.preview.type" : "actionClassifier",
+    "classes" : "Other,Squats",
+    "com.apple.createml.version" : "13.3.1",
+    "com.apple.createml.app.tag" : "99.4",
+    "max_iterations" : "80",
+    "type" : "action_classification",
+    "com.apple.createml.app.version" : "4.0",
+    "Prediction Window Size" : "30"
+  },
+  "MLModelAuthorKey" : "Felix Bernstein"
+}

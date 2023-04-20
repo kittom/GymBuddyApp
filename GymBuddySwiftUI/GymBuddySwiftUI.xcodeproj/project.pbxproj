@@ -1,0 +1,423 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D286BCE29E1B19A00D5DD3D /* HomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D286BCD29E1B19900D5DD3D /* HomePage.swift */; };
+		1D286BD029E1B45800D5DD3D /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D286BCF29E1B45800D5DD3D /* SocialView.swift */; };
+		1D286BD429E1B90700D5DD3D /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D286BD329E1B90700D5DD3D /* LeaderboardView.swift */; };
+		1D28D43729BE7A140018FCE0 /* GymBuddySwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D28D43629BE7A140018FCE0 /* GymBuddySwiftUIApp.swift */; };
+		1D28D43B29BE7A180018FCE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D28D43A29BE7A180018FCE0 /* Assets.xcassets */; };
+		1D28D44029BE7A180018FCE0 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D28D43F29BE7A180018FCE0 /* Persistence.swift */; };
+		1D28D44329BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1D28D44129BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodeld */; };
+		1D28D44D29BEBE900018FCE0 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D28D44C29BEBE900018FCE0 /* MainView.swift */; };
+		1D6C98F429E1C1B7007A1F31 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6C98F329E1C1B7007A1F31 /* ProfileView.swift */; };
+		283520F229ECA516000DCD86 /* ExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283520F129ECA516000DCD86 /* ExerciseView.swift */; };
+		28503D4229F002F6009841A0 /* Pre-Workout View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28503D4129F002F6009841A0 /* Pre-Workout View.swift */; };
+		28696D9729EF3ADB00CB75CE /* TheSquatClassifier.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 28696D9629EF3ADB00CB75CE /* TheSquatClassifier.mlpackage */; };
+		28696D9B29EF3BA400CB75CE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28696D9A29EF3BA400CB75CE /* ViewController.swift */; };
+		288078C429EF4753003AA978 /* donald.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288078C329EF4753003AA978 /* donald.swift */; };
+		289F41A829F1937E00F89B7F /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289F41A729F1937E00F89B7F /* FriendsView.swift */; };
+		28CED79F29E8937B00BD2E23 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CED79E29E8937B00BD2E23 /* LoginView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D286BCD29E1B19900D5DD3D /* HomePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePage.swift; sourceTree = "<group>"; };
+		1D286BCF29E1B45800D5DD3D /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
+		1D286BD329E1B90700D5DD3D /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
+		1D28D43329BE7A130018FCE0 /* GymBuddySwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GymBuddySwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D28D43629BE7A140018FCE0 /* GymBuddySwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymBuddySwiftUIApp.swift; sourceTree = "<group>"; };
+		1D28D43A29BE7A180018FCE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1D28D43F29BE7A180018FCE0 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		1D28D44229BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GymBuddySwiftUI.xcdatamodel; sourceTree = "<group>"; };
+		1D28D44C29BEBE900018FCE0 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		1D6C98F329E1C1B7007A1F31 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		283520F129ECA516000DCD86 /* ExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseView.swift; sourceTree = "<group>"; };
+		28503D4129F002F6009841A0 /* Pre-Workout View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Pre-Workout View.swift"; sourceTree = "<group>"; };
+		28696D9629EF3ADB00CB75CE /* TheSquatClassifier.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = TheSquatClassifier.mlpackage; sourceTree = "<group>"; };
+		28696D9A29EF3BA400CB75CE /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		288078C329EF4753003AA978 /* donald.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = donald.swift; sourceTree = "<group>"; };
+		289F41A729F1937E00F89B7F /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
+		28CED79E29E8937B00BD2E23 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D28D43029BE7A130018FCE0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1D28D42A29BE7A130018FCE0 = {
+			isa = PBXGroup;
+			children = (
+				1D28D43529BE7A130018FCE0 /* GymBuddySwiftUI */,
+				1D28D43429BE7A130018FCE0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1D28D43429BE7A130018FCE0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D28D43329BE7A130018FCE0 /* GymBuddySwiftUI.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1D28D43529BE7A130018FCE0 /* GymBuddySwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				1D28D43629BE7A140018FCE0 /* GymBuddySwiftUIApp.swift */,
+				1D28D44C29BEBE900018FCE0 /* MainView.swift */,
+				28CED79E29E8937B00BD2E23 /* LoginView.swift */,
+				1D286BCD29E1B19900D5DD3D /* HomePage.swift */,
+				1D286BCF29E1B45800D5DD3D /* SocialView.swift */,
+				289F41A729F1937E00F89B7F /* FriendsView.swift */,
+				288078C329EF4753003AA978 /* donald.swift */,
+				28696D9329EF305E00CB75CE /* Camera */,
+				1D286BD329E1B90700D5DD3D /* LeaderboardView.swift */,
+				1D6C98F329E1C1B7007A1F31 /* ProfileView.swift */,
+				283520F129ECA516000DCD86 /* ExerciseView.swift */,
+				1D28D44129BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodeld */,
+				1D28D43A29BE7A180018FCE0 /* Assets.xcassets */,
+				1D28D43F29BE7A180018FCE0 /* Persistence.swift */,
+				28696DA029EF3C2B00CB75CE /* Preview Content */,
+			);
+			path = GymBuddySwiftUI;
+			sourceTree = "<group>";
+		};
+		28696D9329EF305E00CB75CE /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				28503D4129F002F6009841A0 /* Pre-Workout View.swift */,
+				28696D9A29EF3BA400CB75CE /* ViewController.swift */,
+				28696D9629EF3ADB00CB75CE /* TheSquatClassifier.mlpackage */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		28696DA029EF3C2B00CB75CE /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D28D43229BE7A130018FCE0 /* GymBuddySwiftUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D28D44629BE7A180018FCE0 /* Build configuration list for PBXNativeTarget "GymBuddySwiftUI" */;
+			buildPhases = (
+				1D28D42F29BE7A130018FCE0 /* Sources */,
+				1D28D43029BE7A130018FCE0 /* Frameworks */,
+				1D28D43129BE7A130018FCE0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GymBuddySwiftUI;
+			productName = GymBuddySwiftUI;
+			productReference = 1D28D43329BE7A130018FCE0 /* GymBuddySwiftUI.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1D28D42B29BE7A130018FCE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					1D28D43229BE7A130018FCE0 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = 1D28D42E29BE7A130018FCE0 /* Build configuration list for PBXProject "GymBuddySwiftUI" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1D28D42A29BE7A130018FCE0;
+			productRefGroup = 1D28D43429BE7A130018FCE0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D28D43229BE7A130018FCE0 /* GymBuddySwiftUI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D28D43129BE7A130018FCE0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D28D43B29BE7A180018FCE0 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D28D42F29BE7A130018FCE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				289F41A829F1937E00F89B7F /* FriendsView.swift in Sources */,
+				28503D4229F002F6009841A0 /* Pre-Workout View.swift in Sources */,
+				288078C429EF4753003AA978 /* donald.swift in Sources */,
+				1D28D44329BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodeld in Sources */,
+				28696D9729EF3ADB00CB75CE /* TheSquatClassifier.mlpackage in Sources */,
+				1D6C98F429E1C1B7007A1F31 /* ProfileView.swift in Sources */,
+				1D286BCE29E1B19A00D5DD3D /* HomePage.swift in Sources */,
+				1D28D44029BE7A180018FCE0 /* Persistence.swift in Sources */,
+				1D286BD429E1B90700D5DD3D /* LeaderboardView.swift in Sources */,
+				28696D9B29EF3BA400CB75CE /* ViewController.swift in Sources */,
+				28CED79F29E8937B00BD2E23 /* LoginView.swift in Sources */,
+				1D28D44D29BEBE900018FCE0 /* MainView.swift in Sources */,
+				1D28D43729BE7A140018FCE0 /* GymBuddySwiftUIApp.swift in Sources */,
+				1D286BD029E1B45800D5DD3D /* SocialView.swift in Sources */,
+				283520F229ECA516000DCD86 /* ExerciseView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1D28D44429BE7A180018FCE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1D28D44529BE7A180018FCE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1D28D44729BE7A180018FCE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GymBuddySwiftUI/Preview Content\"";
+				DEVELOPMENT_TEAM = ZM628N539U;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GymBuddySwiftUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GymBuddy;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "GymBuddy needs the camera to assess your form.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "GymBuddy needs to access your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "GymBuddy needs to access your photo library.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frederickkohn.GymBuddySwiftUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1D28D44829BE7A180018FCE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GymBuddySwiftUI/Preview Content\"";
+				DEVELOPMENT_TEAM = ZM628N539U;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GymBuddySwiftUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GymBuddy;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "GymBuddy needs the camera to assess your form.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "GymBuddy needs to access your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "GymBuddy needs to access your photo library.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frederickkohn.GymBuddySwiftUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D28D42E29BE7A130018FCE0 /* Build configuration list for PBXProject "GymBuddySwiftUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D28D44429BE7A180018FCE0 /* Debug */,
+				1D28D44529BE7A180018FCE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D28D44629BE7A180018FCE0 /* Build configuration list for PBXNativeTarget "GymBuddySwiftUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D28D44729BE7A180018FCE0 /* Debug */,
+				1D28D44829BE7A180018FCE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		1D28D44129BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1D28D44229BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodel */,
+			);
+			currentVersion = 1D28D44229BE7A180018FCE0 /* GymBuddySwiftUI.xcdatamodel */;
+			path = GymBuddySwiftUI.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 1D28D42B29BE7A130018FCE0 /* Project object */;
+}

@@ -1,0 +1,24 @@
+{
+    "fileFormatVersion": "1.0.0",
+    "itemInfoEntries": {
+        "60A99AAE-2407-40F7-BB1F-A2197B6F286B": {
+            "author": "com.apple.CoreML",
+            "description": "CoreML Model Specification",
+            "name": "TheSquatClassifier 2 1.mlmodel",
+            "path": "com.apple.CoreML/TheSquatClassifier 2 1.mlmodel"
+        },
+        "B3947946-B727-447A-BEE2-C7D3CEC007FA": {
+            "author": "com.apple.CoreML",
+            "description": "External FeatureDescription Overlay",
+            "name": "FeatureDescriptions.json",
+            "path": "com.apple.CoreML/FeatureDescriptions.json"
+        },
+        "FED7C3EA-F5E5-4416-9205-2A87130952E5": {
+            "author": "com.apple.CoreML",
+            "description": "External Metadata Overlay",
+            "name": "Metadata.json",
+            "path": "com.apple.CoreML/Metadata.json"
+        }
+    },
+    "rootModelIdentifier": "60A99AAE-2407-40F7-BB1F-A2197B6F286B"
+}
